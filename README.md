@@ -12,3 +12,8 @@ The idea is that users will get a static list if the JS fails, but it will becom
 
 Note that you don't have to use a semantic list (ul/ol) - it works with any list-like structure.
 
+
+Example
+-------
+
+See [Codepen](https://codepen.io/akirk/pen/KKQgMwM).
