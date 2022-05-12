@@ -22,9 +22,9 @@
 
             Array.prototype.forEach.call(sortable_groups, function(sortable_group, i) {
                 // Store items:
-                sortable_group.items = sortable_group.querySelectorAll('[sortable_item]');
+                //sortable_group.items = sortable_group.querySelectorAll('[sortable_item]');
 
-                var sortable_list = sortable_group.querySelector('[sortable_list]');
+                //var sortable_list = sortable_group.querySelector('[sortable_list]');
 
                 // Expose the form if necessary:
                 var sortable_form_template = sortable_group.querySelector('[sortable_form_template]');
@@ -90,53 +90,52 @@
         },
 
         sortList: function(group, index_name) {
-            var items = group.items;
+            // There may be more than one list in a group (for example if there were
+            // sub-headings within a larger group of lists
+            var sortable_lists = group.querySelectorAll('[sortable_list]');
+            Array.prototype.forEach.call(sortable_lists, function(sortable_list, i) {
 
+                var items = sortable_list.querySelectorAll('[sortable_item]');
 
-            //console.log(items);return;
+                Array.prototype.forEach.call(items, function(item, i) {
+                    var index_els = item.querySelectorAll('[sortable_index]');
+                    var primary_index_string = '';
+                    var remaining_index_string = '';
 
-            Array.prototype.forEach.call(items, function(item, i) {
-                var index_els = item.querySelectorAll('[sortable_index]');
-                var primary_index_string = '';
-                var remaining_index_string = '';
+                    Array.prototype.forEach.call(index_els, function(index_el, i) {
+                        if (index_el.getAttribute('sortable_index_name') == index_name) {
+                            primary_index_string = index_el.textContent;
+                        } else {
+                            remaining_index_string += index_el.textContent + ' ';
+                        }
+                    });
 
-                Array.prototype.forEach.call(index_els, function(index_el, i) {
-                    if (index_el.getAttribute('sortable_index_name') == index_name) {
-                        primary_index_string = index_el.textContent;
-                    } else {
-                        remaining_index_string += index_el.textContent + ' ';
-                    }
+                    // Tidy index strings:
+                    var index_string = primary_index_string + ' ' + remaining_index_string;
+                    index_string = index_string.toLowerCase().trim();
+                    index_string = index_string.replace(/\s{2,}/g, '');
+
+                    item.setAttribute('sortable_index_string', index_string);
                 });
 
-                // Tidy index strings:
-                var index_string = primary_index_string + ' ' + remaining_index_string;
-                index_string = index_string.toLowerCase().trim();
-                index_string = index_string.replace(/\s{2,}/g, '');
+                var items_array = Array.prototype.slice.call(items, 0);
+                items_array.sort(function(a,b){
+                    if (a.getAttribute('sortable_index_string') < b.getAttribute('sortable_index_string')) {
+                        return -1;
+                    }
+                    if (a.getAttribute('sortable_index_string') > b.getAttribute('sortable_index_string')) {
+                        return 1;
+                    }
+                    return 0;
+                });
 
-                item.setAttribute('sortable_index_string', index_string);
-            });
-
-            var items_array = Array.prototype.slice.call(items, 0);
-            items_array.sort(function(a,b){
-                if (a.getAttribute('sortable_index_string') < b.getAttribute('sortable_index_string')) {
-                    return -1;
-                }
-                if (a.getAttribute('sortable_index_string') > b.getAttribute('sortable_index_string')) {
-                    return 1;
-                }
-                return 0;
-            });
-
-            var sortable_list = group.querySelector('[sortable_list]');
-
-            Array.prototype.forEach.call(items_array, function(item, i) {
-                sortable_list.appendChild(item);
+                Array.prototype.forEach.call(items_array, function(item, i) {
+                    sortable_list.appendChild(item);
+                });
             });
 
         }
     };
-
-
 
     ready(sortability.init);
 })();
