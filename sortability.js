@@ -67,7 +67,7 @@
                 }
 
                 // Form controls and default sort order:
-                var control_group = sortable_group.querySelector('[sortable_form_controls]');
+                var control_group = sortable_form.querySelector('[sortable_form_controls]');
                 // Are we dealing with a select element (if not it must be radio's):
                 var select_choice = control_group.querySelector('select[name="sort_choice"]');
                 if (select_choice) {
@@ -108,7 +108,6 @@
         },
 
         sortList: function(group, index_name, dir) {
-            console.log(dir);
             // There may be more than one list in a group (for example if there were
             // sub-headings within a larger group of lists)
             var sortable_lists = group.querySelectorAll('[sortable_list]');
@@ -161,6 +160,8 @@
 
         }
     };
+
+
 
     ready(sortability.init);
 })();
